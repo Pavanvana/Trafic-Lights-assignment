@@ -34,13 +34,13 @@ const App = () => {
         {state.context.timerStatus !== 'pause' ? 
           <button className='button' onClick={() => {
             send({
-              type: "PAUSE"
+              type: "pause"
             })
           }}>⏸</button>
           :
           <button className='button' onClick={() => {
             send({
-              type: "RESUME"
+              type: "resume"
             })
           }}>
           ▶️</button>

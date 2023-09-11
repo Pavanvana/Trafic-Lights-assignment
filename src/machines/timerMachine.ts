@@ -10,9 +10,9 @@ export const timerMachine = createMachine({
 
     schema: {
         events: {} as  {
-            type: 'PAUSE';
+            type: 'pause';
         } |  {
-            type: 'RESUME';
+            type: 'resume';
         } | {
             type: 'redLigthActive'
         } | {
@@ -33,7 +33,7 @@ export const timerMachine = createMachine({
     states:{
         redLigthActive: {
             on: {
-                PAUSE: {
+                pause: {
                     target: "paused",
                     actions: 'assignToContextPausedValue'
                 },
@@ -45,7 +45,7 @@ export const timerMachine = createMachine({
                     target: "redSmallActive",
                     actions: "assignToContextRedSmallActive"
                 },
-                RESUME: {
+                resume: {
                     target: "redLigthActive",
                     actions: "assignToContextResume"
                 }
@@ -53,11 +53,11 @@ export const timerMachine = createMachine({
 
             after: {
                 "1000": [{
-                    cond: "Timer Action"
+                    cond: "timerAction"
                 },{
                     target: 'redLigthActive',
                     actions: 'assignToContextStartTimer',
-                    cond: "Grater Then Three"
+                    cond: "isGraterThenThree"
                 },{
                     target: "redSmallActive",
                     actions: 'assignToContextRedSmallActive'
@@ -67,7 +67,7 @@ export const timerMachine = createMachine({
 
         redSmallActive: {
             on: {
-                PAUSE: {
+                pause: {
                     target: "paused",
                     actions: 'assignToContextPausedValue'
                 },
@@ -79,18 +79,18 @@ export const timerMachine = createMachine({
                     target: "greenLigthActive",
                     actions: "assignToContextGreenActive"
                 },
-                RESUME: {
+                resume: {
                     target: "redSmallActive",
                     actions: "assignToContextResume"
                 }
             },
             after: {
                 "1000": [{
-                    cond: "Timer Action"
+                    cond: "timerAction"
                 },{
                     target: 'redSmallActive',
                     actions: 'assignToContextStartTimer',
-                    cond: "Grater Then Zero"
+                    cond: "isGraterThenZero"
                 },{
                     target: "greenLigthActive",
                     actions: 'assignToContextGreenActive'
@@ -101,7 +101,7 @@ export const timerMachine = createMachine({
         greenLigthActive: {
             after: {
                 "5000":[{
-                    cond: "Timer Action"
+                    cond: "timerAction"
                 },{
                     target: "yellowLigtActive",
                     actions: 'assignToContextYellowActive'
@@ -109,7 +109,7 @@ export const timerMachine = createMachine({
             },
 
             on: {
-                PAUSE: {
+                pause: {
                     target: "paused",
                     actions: 'assignToContextPausedValue'
                 },
@@ -121,7 +121,7 @@ export const timerMachine = createMachine({
                     target: "yellowLigtActive",
                     actions: "assignToContextYellowActive"
                 },
-                RESUME: {
+                resume: {
                     target: "greenLigthActive",
                     actions: "assignToContextResume"
                 }
@@ -130,7 +130,7 @@ export const timerMachine = createMachine({
 
         yellowLigtActive: {
             on: {
-                PAUSE: {
+                pause: {
                     target: "paused",
                     actions: 'assignToContextPausedValue'
                 },
@@ -142,14 +142,14 @@ export const timerMachine = createMachine({
                     target: "redLigthActive",
                     actions: "assignToContextRedActive"
                 },
-                RESUME: {
+                resume: {
                     target: "yellowLigtActive",
                     actions: "assignToContextResume"
                 }
             },
             after: {
                 "2000": [{
-                    cond: "Timer Action"
+                    cond: "timerAction"
                 },{
                     target: "redLigthActive",
                     actions: 'assignToContextRedActive'
@@ -159,81 +159,81 @@ export const timerMachine = createMachine({
 
         paused: {
             on: {
-                RESUME: [{
+                resume: [{
                     target: 'redLigthActive',
                     actions: "assignToContextResume",
-                    cond: "redLight"
+                    cond: "isRedLight"
                 }, {
                     target: "greenLigthActive",
                     actions: "assignToContextResume",
-                    cond: "greenLight"
+                    cond: "isGreenLight"
                 },{
                     target: "yellowLigtActive",
                     actions: "assignToContextResume",
-                    cond: "yellowLight"
+                    cond: "isYellowLight"
                 },{
                     target: "redSmallActive",
                     actions: "assignToContextResume",
-                    cond: "redSmall"
+                    cond: "isRedSmall"
                 }],
                 prevState: [{
                     target: "yellowLigtActive",
                     actions: "assignToContextYellowActive",
-                    cond: "redLight"
+                    cond: "isRedLight"
                 },{
                     target: "greenLigthActive",
                     actions: "assignToContextGreenActive",
-                    cond: "yellowLight"
+                    cond: "isYellowLight"
                 },{ 
                     target: "redSmallActive",
                     actions: "assignToContextRedSmallActive",
-                    cond: 'greenLight'
+                    cond: 'isGreenLight'
                 },{
                     target: "redLigthActive",
                     actions: "assignToContextRedActive",
-                    cond: "redSmall"
+                    cond: "isRedSmall"
                 }],
                 nextState: [{
                     target: "redSmallActive",
                     actions: "assignToContextRedSmallActive",
-                    cond: "redLight"
+                    cond: "isRedLight"
                 },{
                     target: "greenLigthActive",
                     actions: "assignToContextGreenActive",
-                    cond: "redSmall"
+                    cond: "isRedSmall"
                 },{
                     target: "yellowLigtActive",
                     actions: "assignToContextYellowActive",
-                    cond: "greenLight"
+                    cond: "isGreenLight"
                 }, {
                     target: "redLigthActive",
                     actions: "assignToContextRedActive",
-                    cond: "yellowLight"
+                    cond: "isYellowLight"
                 }]
             }
         },
     }
 }, {
     guards: {
-        "Grater Then Three": (context, event) => {
+        "isGraterThenThree": (context, event) => {
             return context.timer > 4 
         },
-        "Grater Then Zero": (context, event) => {
+        "isGraterThenZero": (context, event) => {
             return context.timer > 1 
         },
-        "redLight": (context, event) => {
+        "isRedLight": (context, event) => {
             return context.activeLight === 'red'
         },
-        "redSmall": (context, event) => {
+        "isRedSmall": (context, event) => {
             return context.activeLight === 'redsmall'
         }, 
-        "greenLight": (context, event) => {
+        "isGreenLight": (context, event) => {
             return context.activeLight === 'green'
         },
-        "yellowLight": (context, event) => {
+        "isYellowLight": (context, event) => {
             return context.activeLight === 'yellow'
         },
-        "Timer Action": (context, event) => {
+        "timerAction": (context, event) => {
             return context.timerStatus === "pause"
         }
     },
